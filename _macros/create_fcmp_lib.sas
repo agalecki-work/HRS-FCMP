@@ -5,7 +5,7 @@
 
 %put FCMP member: `%upcase(&member)` is created  ... OK;
 %put Macro `create_fcmp_lib` is invoked by &sas_prog..sas script ... OK;
-%put Log (i.e. this file) is stored in &_cmplib_info_path/&member folder;
+%put Log (i.e. this file) is stored in &_cmplib_path  folder;
 
 /*--- Create dataset `filenames`with the list of source files */ 
 
@@ -25,9 +25,32 @@ run;
 %put fcmp_files := &fcmp_files;
 
 
-filename _source  "&fcmp_src_path";     /* Ex.  filename _source './src/DLfunction' */
+filename _source  "&fcmp_src_path";     /* Ex.  filename _source  */
 %let _source_info = _source(&fcmp_files);
 %put  _source_info = &_source_info;
+
+%filenamesInFolder(&_cmplib_path);  /* Dataset `_filenames` created */
+title "Folder : &_cmplib_path";
+title2 "List of files in this folder";
+proc print data = _filenames;
+run;
+
+data html_files;
+ set _filenames;
+ length fpath $ 200;
+ length fref $8;
+ fref = "tmp_file";
+ if upcase(scan(fname, 2, ".")) = "HTML";
+ fpath = "&_cmplib_path" || "/" || strip(fname);
+ rc=filename(fref, fpath);
+ if rc = 0 and fexist(fref) then
+        rc=fdelete(fref);
+     rc=filename(fref);
+run;
+
+Title "HTML files listed (they were deleted)";
+proc print data = html_files;
+run;
 
 proc datasets library = &cmplib kill;
 run;
