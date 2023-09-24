@@ -47,11 +47,11 @@ run;
 /*--- Create html files ---*/
 ods listing close;
 
-%let html_path = &_cmplib_path/&member._info;
 
-ods html body = "&html_path..html"
-         contents= "&html_path.c.html"
-         frame = "&html_path.f.html"
+ods html path ="&_cmplib_path" 
+         body = "&member._info-body.html"
+         contents= "&member._info-contents.html"
+         frame = "&member._info-frame.html"
          ;
 
 Title "List of FCMP GROUPS in &member library member"; 
