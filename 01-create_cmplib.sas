@@ -3,6 +3,7 @@
 
 options mprint nocenter;
 
+
 /*--- Path to HRS_FCMP folder:  Defined in `autoexec.sas` ---*/
 %put HRS_FCMP_path := &HRS_FCMP_path; 
 
@@ -16,32 +17,89 @@ options mprint nocenter;
 
 libname _cmplib "&_cmplib_path";  /*-- Output library --*/
 %create_fcmp(_cmplib, &member);
+%cmplib_info(_cmplib, &member);
 
-/* Save _FCMP_info  dataset */
 
-data _cmplib.&member._info;
- set _FCMP_info;
+/*--- Save _FCMP info  datasets  ---*/
+
+data _cmplib.&member._funs;
+ set _FCMP_funs;
 run;
+
+data _cmplib.&member._datain;
+ set _datain_allinfo;
+run;
+
+data _cmplib.&member._vgrps;
+ set _vgrps_allinfo;
+run;
+
+data _cmplib.&member._vout;
+ set _vout_allinfo;
+run;
+
+data _cmplib.&member._vin_grps;
+ set xprod_yr_by_vgrps;
+run;
+
+
+
+/*--- Create html files ---*/
 ods listing close;
 
-%let html_path = &_cmplib_path/&member._info.html;
+%let html_path = &_cmplib_path/&member._info;
 
-ods html file = "&html_path";
+ods html body = "&html_path..html"
+         contents= "&html_path.c.html"
+         frame = "&html_path.f.html"
+         ;
 
-Title "List of FCMP GROUPS in &member library member";
-
-proc sort data= _FCMP_info out = _grps nodupkey;
+Title "List of FCMP GROUPS in &member library member"; 
+proc sort data= _FCMP_funs out = FCMP_grps nodupkey;
 by fcmp_grp;
 run;
 
-proc print data = _grps;
+%let mydata = FCMP_grps;
+ods proclabel "FCMP groups (%nobs)";
+Title "FCMP Groups of funs/subs in &member FCMP library (%nobs)";
+proc print data = FCMP_grps  contents = "- list";
 var fcmp_grp;
 run;
 
-Title "List of funs/subs in &member library member (by fcmp_grp)";
-proc print data =_FCMP_info;
-by fcmp_grp;
+%let mydata = _FCMP_funs;
+ods proclabel "FCMP Funs/subs (%nobs)";
+Title "FCMP funs/subs in &member library member (by fcmp_grp, n = %nobs)";
+proc print data =_FCMP_funs  contents = "- by group";
+* by fcmp_grp;
 run;
+quit;
+
+%let mydata = _datain_allinfo;
+ods proclabel "Datain (%nobs)";
+Title "Datain (%nobs)";
+Title2 "Using calls `dispatch_datain(year)`";
+proc print data= _datain_allinfo  contents = "- list";
+run;
+
+%let mydata = _vgrps_allinfo;
+Title "Var groups (%nobs)";
+ods proclabel "Var groups (%nobs)";
+proc print data= _vgrps_allinfo contents = "- list";
+run;
+
+%let mydata = _vout_allinfo;
+Title "Output vars (%nobs)";
+ods proclabel "Output vars (%nobs)";
+proc print data= _vout_allinfo contents = "- list";
+var vout_nm vgrp ctype len vout_lbl;
+run;
+
+%let mydata = xprod_yr_by_vgrps;
+Title "Input vars  (%nobs)";
+ods proclabel "Input vars (%nobs)";
+proc print data= xprod_yr_by_vgrps contents = "- by year var_grp";
+run;
+
 ods html close;
 
 

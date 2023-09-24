@@ -31,8 +31,8 @@ filename _source  "&fcmp_src_path";     /* Ex.  filename _source  */
 
 %filenamesInFolder(&_cmplib_path);  /* Dataset `_filenames` created */
 title "Folder : &_cmplib_path";
-title2 "List of files in this folder";
-proc print data = _filenames;
+**title2 "List of files in this folder";
+**proc print data = _filenames;
 run;
 
 data html_files;
@@ -48,8 +48,8 @@ data html_files;
      rc=filename(fref);
 run;
 
-Title "HTML files listed (they were deleted)";
-proc print data = html_files;
+**Title "HTML files listed (they were deleted)";
+**proc print data = html_files;
 run;
 
 proc datasets library = &cmplib kill;
@@ -62,25 +62,4 @@ proc fcmp outlib = &cmplib..&member..all; /* 3 level name */
 run;
 quit; /* FCMP */
 
-options cmplib = &cmplib..&member;
-
-
-data _FCMP_info;
- label fcmp_name ="Function/subroutine name";
- label fcmp_grp  ="Function/subroutine group";
- set &cmplib..&member(keep=name value);
- if name in ("FUNCTION", "SUBROUTI");
- length scan1 scan2 fcmp_grp fcmp_name $200;
- scan1 = scan(strip(value),2,')');
- scan2 = scan(strip(scan1), 2,"=");
- scan2 = translate(strip(scan2),"",";");
- scan2 = translate(scan2,'','"');
- fcmp_grp = translate(scan2,'',"'");
- fcmp_name =scan(strip(value),2," (");
- drop scan1 scan2;
-run;
-
-proc sort data=_FCMP_info;
-by fcmp_grp;
-run;
 %mend create_fcmp;
