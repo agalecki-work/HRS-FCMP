@@ -2,11 +2,6 @@
 
 options cmplib = &cmplib..&member;
 
-data _null_;
-  file print;
-  put / "&member info";
-run;
-
 
 /* Dataset contains list of FCMP functions/subroutines */
 data _FCMP_funs;
@@ -30,13 +25,16 @@ run;
 
 /* List of input datasets */
 
+/* Dataset `_valid_study_yrs` with one variable `year` created */
+filename _aux "&_aux_path/valid_study_yrs.sas"; 
+%include _aux; 
+
 data _datain_allinfo;
- length year 8;
+ set _valid_study_yrs; 
  length datain $20;
- do year = 1992 to 1996, 1998 to 2030 by 2; 
-  datain = dispatch_datain(year);
-  output;
- end;
+ datain = dispatch_datain(year);
+ defined = "Yes";
+ if datain = "" then defined = "No";
 run;
 
 /* List of variable groups  */
@@ -79,7 +77,7 @@ run;
 
 data _datain_1;
   set _datain_allinfo;
-  if datain ne "";  /* Keep rows with non-blank name */
+  if defined = "Yes";  /* Keep rows with non-blank name */
 run;
 
 data xprod_yr_by_vgrps; /* Cartesian product of years by vgrp */

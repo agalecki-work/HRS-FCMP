@@ -15,30 +15,33 @@ options mprint nocenter;
 
 /* Create FCMP cmplib (using source in src folder)*/
 
-libname _cmplib "&_cmplib_path";  /*-- Output library --*/
+libname _cmplib    "&_cmplib_path";  /*-- Output library --*/
+libname _infolib "&_info_path": 
 %create_fcmp(_cmplib, &member);
 %cmplib_info(_cmplib, &member);
 
 
 /*--- Save _FCMP info  datasets  ---*/
 
-data _cmplib.&member._funs;
+data member_info
+
+data _infolib.&member._funs;
  set _FCMP_funs;
 run;
 
-data _cmplib.&member._datain;
+data _infolib.&member._datain;
  set _datain_allinfo;
 run;
 
-data _cmplib.&member._vgrps;
+data _infolib.&member._vgrps;
  set _vgrps_allinfo;
 run;
 
-data _cmplib.&member._vout;
+data _infolib.&member._vout;
  set _vout_allinfo;
 run;
 
-data _cmplib.&member._vin_grps;
+data _infolib.&member._vin_grps;
  set xprod_yr_by_vgrps;
 run;
 
@@ -47,21 +50,21 @@ run;
 /*--- Create html files ---*/
 ods listing close;
 
-
-ods html path ="&_cmplib_path" 
+ods html path ="&_html_path" 
          body = "&member._info-body.html"
          contents= "&member._info-contents.html"
          frame = "&member._info-frame.html"
          ;
+         
 
-Title "List of FCMP GROUPS in &member library member"; 
+
 proc sort data= _FCMP_funs out = FCMP_grps nodupkey;
 by fcmp_grp;
 run;
 
 %let mydata = FCMP_grps;
 ods proclabel "FCMP groups (%nobs)";
-Title "FCMP Groups of funs/subs in &member FCMP library (%nobs)";
+Title "FCMP Groups of funs/subs in &member FCMP library member (%nobs)";
 proc print data = FCMP_grps  contents = "- list";
 var fcmp_grp;
 run;
@@ -83,12 +86,14 @@ run;
 
 %let mydata = _vgrps_allinfo;
 Title "Var groups (%nobs)";
+Title2 ' vgrps_list =bind_vgrps("?"), vout_nms = dispatch_vout(vgrp)';
 ods proclabel "Var groups (%nobs)";
 proc print data= _vgrps_allinfo contents = "- list";
 run;
 
 %let mydata = _vout_allinfo;
 Title "Output vars (%nobs)";
+Title2 "Syntax: len = vout_length(vout_nm), vout_lbl = vout_label(vout_nm)":
 ods proclabel "Output vars (%nobs)";
 proc print data= _vout_allinfo contents = "- list";
 var vout_nm vgrp ctype len vout_lbl;

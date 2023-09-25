@@ -16,7 +16,7 @@ Title ">> Macro  `create_fcmp`";
 %put fcmp_src_path = &fcmp_src_path;
 %filenamesInFolder(&fcmp_src_path);  /* Dataset `_filenames` created */
 
-title2 "List of filenames in `src` subfolder"
+title2 "List of filenames in `src` subfolder";
 proc print data=_filenames;
 var fname;
 run;

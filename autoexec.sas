@@ -13,12 +13,13 @@ options nocenter mprint nodate;
 
 options formdlim=" ";
 filename HRS_FCMP "&HRS_FCMP_path"; 
-
+%let HRS_FCMP_fullpath = ;
 title ">> ==== autoexec. sas:   ===="; 
 data _null_;
   file print;
   HRS_FCMP_path = symget("HRS_FCMP_path");
   HRS_FCMP_fullpath = pathname("HRS_FCMP");
+  call symput("HRS_FCMP_fullpath", strip(HRS_FCMP_fullpath));
   rc = fexist("HRS_FCMP");
   select(rc);
    when (1) text = "... Yes";
