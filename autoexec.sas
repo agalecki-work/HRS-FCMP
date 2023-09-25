@@ -14,7 +14,7 @@ options nocenter mprint nodate;
 options formdlim=" ";
 filename HRS_FCMP "&HRS_FCMP_path"; 
 
-title "==== autoexec. sas:  Info on HRS_FCMP project folder ===="; 
+title ">> ==== autoexec. sas:   ===="; 
 data _null_;
   file print;
   HRS_FCMP_path = symget("HRS_FCMP_path");
@@ -25,10 +25,11 @@ data _null_;
    when (0) text = "... No ";
    otherwise;
   end;
-  put / "  Fileref:        HRS_FCMP";
-  put / "  Path:         " HRS_FCMP_path;
-  put / "  FULL path:    " HRS_FCMP_fullpath;
-  put / "  Exists:       " text;
+  put / " --- Info on HRS_FCMP project folder" /;
+  put "  Fileref:          HRS_FCMP";
+  put "  `HRS_FCMP_path`:" HRS_FCMP_path;
+  put "  FULL path:      " HRS_FCMP_fullpath;
+  put "  Exists:         " text;
 run;
 
 %let macros_path = &HRS_FCMP_path/_macros;
@@ -40,15 +41,14 @@ filename _macros "&macros_path";
 
 filename _setup "&_setup_path";
 
-title "==== autoexec. sas  (... continued) ====";
 
 data _null_;
   file print;
  
   macros_path = symget("macros_path");
-  put / "Info on `_macros` subfolder";
-  put / "  Fileref:        _macros";
-  put / "  Path:           " macros_path;
+  put  / "--- Info on `_macros` subfolder" /;
+  put  "  Fileref:        _macros";
+  put  "  `macros_path` mvar:   " macros_path;
   put;
   
   _setup_path = symget("_setup_path");
@@ -59,9 +59,9 @@ data _null_;
    otherwise;
   end;
 
-  put / "Info on FCMP member setup file";
+  put / "--- Info on FCMP member setup file" /;
   put / "  Fileref:        _setup";
-  put / "  Path:         " _setup_path;
+  put / "  `_setup_path` mvar:         " _setup_path;
   put / "  Exists:       " text;
   put;
 run;

@@ -1,4 +1,7 @@
-%macro create_fcmp(cmplib, member);  
+%macro create_fcmp(cmplib, member); 
+
+Title ">> Macro  `create_fcmp`";
+
 %* cmplib_name.  Ex. DLfunction;
 %* fcmp_path  (global) Ex. .;
 %let sas_prog = create_cmplib;
@@ -12,6 +15,13 @@
 %let fcmp_src_path = &_fcmp_source_path;       /* Ex.  ./fcmp_src */
 %put fcmp_src_path = &fcmp_src_path;
 %filenamesInFolder(&fcmp_src_path);  /* Dataset `_filenames` created */
+
+title2 "List of filenames in `src` subfolder"
+proc print data=_filenames;
+var fname;
+run;
+
+
 %let fcmp_files =;      /* Ex. _binder _auxiliary ... */
 data _filenames;
   length filenames $5000;
@@ -30,9 +40,6 @@ filename _source  "&fcmp_src_path";     /* Ex.  filename _source  */
 %put  _source_info = &_source_info;
 
 %filenamesInFolder(&_cmplib_path);  /* Dataset `_filenames` created */
-title "Folder : &_cmplib_path";
-**title2 "List of files in this folder";
-**proc print data = _filenames;
 run;
 
 data html_files;
@@ -61,5 +68,11 @@ proc fcmp outlib = &cmplib..&member..all; /* 3 level name */
 
 run;
 quit; /* FCMP */
+
+data _null_;
+ file print;
+ put " Macro  `create_fcmp` ends";
+run;
+
 
 %mend create_fcmp;
