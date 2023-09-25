@@ -16,14 +16,14 @@ options mprint nocenter;
 /* Create FCMP cmplib (using source in src folder)*/
 
 libname _cmplib    "&_cmplib_path";  /*-- Output library --*/
-libname _infolib "&_info_path": 
+
 %create_fcmp(_cmplib, &member);
 %cmplib_info(_cmplib, &member);
 
 
 /*--- Save _FCMP info  datasets  ---*/
 
-data member_info
+libname _infolib "&_info_path"; 
 
 data _infolib.&member._funs;
  set _FCMP_funs;
