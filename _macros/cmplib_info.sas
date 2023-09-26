@@ -1,6 +1,8 @@
 %macro cmplib_info(cmplib, member);
 
 options cmplib = &cmplib..&member;
+title ">>--- Macro `cmplib_info`  ---";
+title2 "Data `_FCMP_funs`";
 
 /* Dataset contains list of FCMP functions/subroutines */
 data _FCMP_funs;
@@ -74,7 +76,8 @@ run;
 
 data _datain_1;
   set _datain_allinfo;
-  if defined = "Yes";  /* Keep rows with non-blank name */
+  if datain_blank = "No ";
+  *** if defined = "Yes";  /* Keep rows with non-blank name */
 run;
 
 data xprod_yr_by_vgrps; /* Cartesian product of years by vgrp */
@@ -95,5 +98,6 @@ data xprod_yr_by_vgrps; /* Cartesian product of years by vgrp */
  drop vout_nms;
 run;
 
+title ">>--- Macro `cmplib_info` ends ---";
 
 %mend cmplib_info;

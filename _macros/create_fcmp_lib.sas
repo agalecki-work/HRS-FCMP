@@ -39,8 +39,14 @@ filename _source  "&fcmp_src_path";     /* Ex.  filename _source  */
 %let _source_info = _source(&fcmp_files);
 %put  _source_info = &_source_info;
 
-%filenamesInFolder(&_cmplib_path);  /* Dataset `_filenames` created */
+%filenamesInFolder(&_html_path);  /* Dataset `_filenames` created */
 run;
+
+title  ">>--- Macro `create_fcmp`  ---";
+title2 "List of filenames in `html` subfolder";
+proc print data = _filenames;
+run;
+
 
 data html_files;
  set _filenames;
@@ -55,9 +61,6 @@ data html_files;
      rc=filename(fref);
 run;
 
-**Title "HTML files listed (they were deleted)";
-**proc print data = html_files;
-run;
 
 proc datasets library = &cmplib kill;
 run;
