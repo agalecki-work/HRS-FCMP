@@ -1,29 +1,42 @@
-/*---  autoexec.sas executed ---*/
-/*---  _setup-prj.sas included */
+options nocenter mprint nodate;
 
-options mprint nocenter;
+/*--- Provide path to HRS_FCMP folder ---*/
+%let HRS_FCMP_path = .;                    
+
+/*--- Provide  FCMP member name  ---*/
+/* Make sure that corresponding  properly structured <member>-FCMP folder exists) */
+/* Example: member = DLfunction   */
+%let member = DLfunction;  
 
 
-/*--- Path to HRS_FCMP folder:  Defined in `autoexec.sas` ---*/
-%put HRS_FCMP_path := &HRS_FCMP_path; 
+/* =========== NO CHANGES NEEDED BELOW === */ 
 
-/*--- FCMP member:  Defined in `setup-prj.sas`. Ex. DLFUNCTION */
-%put FCMP member   :=  &member;         
+/*--- Path to setup file ---*/
 
-/*--- Path to output folder: Defined in `_setup-prj.sas` ---*/
-%put Path to output folder := &_cmplib_path; 
+%let _setup_path = &HRS_FCMP_path/_setup.sas;
+
+filename _setup "&_setup_path";
+%include _setup;
 
 /* Create FCMP cmplib (using source in src folder)*/
 
 libname _cmplib    "&_cmplib_path";  /*-- Output library --*/
 
 %create_fcmp(_cmplib, &member);
+
+/*---  Create temp datasets with the FCMP related information */
 %cmplib_info(_cmplib, &member);
 
 
 /*--- Save _FCMP info  datasets  ---*/
 
 libname _infolib "&_info_path"; 
+
+%macro skipit;
+data _infolib.&member._init;
+ set _study_yrs_init;
+run;
+%mend skipit;
 
 data _infolib.&member._funs;
  set _FCMP_funs;
@@ -55,9 +68,17 @@ ods html path ="&_html_path"
          contents= "&member._info-contents.html"
          frame = "&member._info-frame.html"
          ;
-         
+
+%macro skipit;         
+%let mydata = _study_yrs_init;
+ods proclabel "Study_yrs_init (%nobs)";
+Title "Study years considered by `&member` FCMP library member (%nobs)";
+proc print data = _study_yrs_init  contents = "- list";
+run;
+%mend skipit;
 
 
+/* FCMP functions  info*/
 proc sort data= _FCMP_funs out = FCMP_grps nodupkey;
 by fcmp_grp;
 run;

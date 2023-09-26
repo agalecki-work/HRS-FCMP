@@ -2,7 +2,6 @@
 
 options cmplib = &cmplib..&member;
 
-
 /* Dataset contains list of FCMP functions/subroutines */
 data _FCMP_funs;
  label fcmp_name ="Function/subroutine name";
@@ -25,16 +24,14 @@ run;
 
 /* List of input datasets */
 
-/* Dataset `_valid_study_yrs` with one variable `year` created */
-filename _aux "&_aux_path/valid_study_yrs.sas"; 
-%include _aux; 
+/* Dataset `_study_yrs_init` with one variable `year` created */
 
 data _datain_allinfo;
- set _valid_study_yrs; 
+ set _study_yrs_init;  /* Data created by a local macro */
  length datain $20;
  datain = dispatch_datain(year);
- defined = "Yes";
- if datain = "" then defined = "No";
+ datain_blank = "No ";
+ if datain  = "" then datain_blank = "Yes";
 run;
 
 /* List of variable groups  */
