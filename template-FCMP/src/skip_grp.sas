@@ -1,13 +1,14 @@
 %macro populate_skip_array;
 
-cout[1] = skip_dress;
-cout[2] = skip_other; 
+cout[1] = ;
+cout[2] = ; 
  
 %mend populate_skip_array;
 
 /* ====== skip variables for all years =====*/
 
 subroutine skip_9596(cout[*], cin[*]) group ="skip";
+/* cout: skip_dress, skip_other */
  outargs cout;
 
   do i = 1 to 2;
@@ -78,7 +79,6 @@ function skip_vin(studyyr) $ group = "skip";
        vin = translate(_tmpc, cx, "@");
      end;
  end;
- put "FUN skip_vin(): studyyr=" studyyr ", vin=" vin;
 
  return(vin);
 endsub; /* function skip_vin */

@@ -20,13 +20,13 @@ function bind_vgrps(select_vgrps $) $ group = "binder";
   /* Include all variable groups in `grplist` below.*/
   /* $ sign indicates _character_ variable group */
   grplist = select_vgrps;
-  if select_vgrps = "?" then grplist = "subhh$ skip"; 
+  if select_vgrps = "?" then grplist = "subhh$ skip need"; 
   return(grplist);
 endsub; 
 
 
 function dispatch_datain(studyyr) $ group ="binder";
- /* Returns dataset name for a given year */
+ /* Returns input dataset name for a given study year */
  length dt $32;
  length yr2 $2;
  length yearc $4;
@@ -53,6 +53,7 @@ function dispatch_vout(vgrp $) $ group ="binder";
  select(_vgrp);
   when("subhh$")     vout = "subhh";
   when("skip")       vout = "skip_dress skip_other";
+  when("need")       vout = "need_meds";
   otherwise;
  end;
 return(vout);
@@ -68,6 +69,7 @@ select(v);
   when("subhh")          lbl = "SUB-HOUSEHOLD IDENTIFIER";
   when("skip_dress")     lbl = "SKIP DRESS ADL FLAG";
   when("skip_other")     lbl = "SKIP OTHER ADL FLAG";
+  when("need_meds")      lbl = "IADL IF NEEDED DIFFICULTY - TAKE MEDICATIONS";
   otherwise lbl =tmpc;
 end;
 return(lbl);
@@ -90,7 +92,7 @@ endsub;
 
 function dispatch_vin(studyyr, vgrp $) $ group ="binder";
 
-/* Based on `studyyr` and `vgrp` returns list of input variables */
+/* Based on `studyyr` and `vgrp` returns character string with a list of input variables */
  length vin $500;
  length _vgrp $500;
  _vgrp = lowcase(vgrp);
@@ -98,6 +100,7 @@ function dispatch_vin(studyyr, vgrp $) $ group ="binder";
   select(_vgrp);
    when("subhh$")     vin = subhh_vin(studyyr);
    when("skip")       vin = skip_vin(studyyr);
+   when("need")       vin = need_vin(studyyr);
    otherwise;
   end;
 return(vin);
@@ -112,13 +115,14 @@ subroutine exec_vgrpx(studyyr, vgrp $, cout[*], cin[*]) group ="binder";
  length _vgrpx $50;
  _vgrpx = lowcase(vgrp);
  select(_vgrpx);
-  when("skip")        call skip_sub(studyyr, cout, cin);
+  when("skip")      call skip_sub(studyyr, cout, cin);
+  when("skip")      call need_sub(studyyr, cout, cin);
   otherwise;
  end;
 endsub; /* subroutine exec_vgrpx */;
 
 function exec_vgrpc(studyyr, vgrp $, cin[*] $) $ group ="binder";
-/* Used for _character_  variable groups only */ 
+/* Function used for _character_  variable groups only */ 
  
  length _vgrpc $50;
  _vgrpc = lowcase(vgrp);

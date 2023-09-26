@@ -1,31 +1,22 @@
-%macro populate_need_array;
-
-cout[1] = need_meds;
-
-%mend populate_need_array;
 
 /* ====== need variables for all years =====*/
 
-subroutine need_95_xx(cout[*], cin[*]) group ="need";
- outargs cout;
+function need_95_xx(vin) group ="need";
  
-   cout[1] = cin[1];
-   select(cin[1]);
-	 when(5) cout[1] = 0;
-	 when(7) cout[1] =.O;     
-     when(8) cout[1] =.D;
-     when(9) cout[1] =.R;
-	 when(.) cout[1] =.M;
-     otherwise;
-   end;
-
+ select(vin);
+   when(5) vout = 0;
+   when(7) vout =.O;     
+   when(8) vout =.D;
+   when(9) vout =.R;
+   when(.) vout =.M;
+   otherwise;
+ end;
+ return(vout);  /* `need_meds` */
 endsub; 
 
 subroutine need_sub(studyyr, cout[*], cin[*]) group ="need";
  outargs cout;
-
- call need_95_xx(cout, cin);
-
+ cout[1] = need_95_xx(cin[1]);
 endsub; /*subroutine need_sub */
 
 function need_vin(studyyr) $ group ="need";
@@ -48,7 +39,6 @@ function need_vin(studyyr) $ group ="need";
        vin = translate(_tmpc, cx, "@");
      end;
  end;
- **put "FUN need_vin(): studyyr=" studyyr ", vin=" vin;
 
  return(vin);
 endsub; /* function need_vin */

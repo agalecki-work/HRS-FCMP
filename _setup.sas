@@ -3,7 +3,7 @@
 /* This file contains information specific to a selected FCMP member */
 
 
-%let member = DLFunction;   /*--- Select FCMP member name (Corresponds to -FCMP folder name ---*/
+%let member = template;   /*--- Select FCMP member name (Corresponds to -FCMP folder name ---*/
 
 
 /* === NO changes needed below */

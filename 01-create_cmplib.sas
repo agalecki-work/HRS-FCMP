@@ -93,7 +93,7 @@ run;
 
 %let mydata = _vout_allinfo;
 Title "Output vars (%nobs)";
-Title2 "Syntax: len = vout_length(vout_nm), vout_lbl = vout_label(vout_nm)":
+Title2 "Syntax: len = vout_length(vout_nm), vout_lbl = vout_label(vout_nm)";
 ods proclabel "Output vars (%nobs)";
 proc print data= _vout_allinfo contents = "- list";
 var vout_nm vgrp ctype len vout_lbl;
