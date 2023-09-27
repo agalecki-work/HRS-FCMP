@@ -1,6 +1,27 @@
 %macro cmplib_info(cmplib, member);
 
 options cmplib = &cmplib..&member;
+
+
+title ">>--- Macro `cmplib_info`  ---";
+title2 "Data `_FCMP_funs`";
+
+/* Creates auxiliary dataset with info on fcmp member */
+/* Requires that `options cmplib=` is defined */
+data _fcmp_info;
+ length _label  $256;
+ length _member $32;
+ length _version $30;
+ length _datestamp $30;
+_label     = fcmp_member_info("label");
+_member    = fcmp_member_info("fcmp_member");
+_version   = fcmp_member_info("version_date");
+_datestamp = fcmp_member_info("datestamp");
+run;
+
+
+
+
 title ">>--- Macro `cmplib_info`  ---";
 title2 "Data `_FCMP_funs`";
 
