@@ -32,14 +32,11 @@ libname _cmplib    "&_cmplib_path";  /*-- Output library --*/
 
 libname _infolib "&_info_path"; 
 
-<<<<<<< HEAD
+
 data _infolib.&member._info;
  set _FCMP_info;
 run;
 
-
-=======
->>>>>>> edf962de6167a710f39e1fafaddd271a023194d4
 data _infolib.&member._funs;
  set _FCMP_funs;
 run;
@@ -73,8 +70,8 @@ ods html path ="&_html_path"
          
 /* --- FCMP info  ---*/
 ods proclabel "FCMP info";
-Title "FCMP info";
-Title2 "Using calls `fcmp_member_info('?')`";
+Title "Info on `&member` FCMP member.";
+Title2 "Info extracted using call `fcmp_member_info('?')`";
 proc print data= _fcmp_info contents = "- one row";
 run;
 
@@ -93,7 +90,7 @@ run;
 
 %let mydata = _FCMP_funs;
 ods proclabel "FCMP Funs/subs (%nobs)";
-Title "FCMP funs/subs in &member library member (by fcmp_grp, n = %nobs)";
+Title "FCMP funs/subs in &member library member (sorted by fcmp_grp, n = %nobs)";
 proc print data =_FCMP_funs  contents = "- by group";
 * by fcmp_grp;
 run;
@@ -124,7 +121,7 @@ run;
 %let mydata = xprod_yr_by_vgrps;
 Title "Input vars  (%nobs)";
 ods proclabel "Input vars (%nobs)";
-proc print data= xprod_yr_by_vgrps contents = "- by year var_grp";
+proc print data= xprod_yr_by_vgrps contents = "- year*var_grp";
 run;
 
 ods html close;
