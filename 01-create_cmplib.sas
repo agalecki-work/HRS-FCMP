@@ -32,11 +32,14 @@ libname _cmplib    "&_cmplib_path";  /*-- Output library --*/
 
 libname _infolib "&_info_path"; 
 
+<<<<<<< HEAD
 data _infolib.&member._info;
  set _FCMP_info;
 run;
 
 
+=======
+>>>>>>> edf962de6167a710f39e1fafaddd271a023194d4
 data _infolib.&member._funs;
  set _FCMP_funs;
 run;
