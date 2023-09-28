@@ -5,7 +5,8 @@ options nocenter mprint nodate;
 
 /*--- Provide  FCMP member name  ---*/
 /* Make sure that corresponding  properly structured <member>-FCMP folder exists) */
-/* Example: member = DLfunction   */
+/* Example: member = DLfunction. Corresponding folder DLFUNCTION-FCMP  was created
+     using `template-FCMP` as a template */
 %let member = DLfunction;  
 
 
