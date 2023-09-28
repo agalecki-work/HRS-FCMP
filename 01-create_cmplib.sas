@@ -32,12 +32,6 @@ libname _cmplib    "&_cmplib_path";  /*-- Output library --*/
 
 libname _infolib "&_info_path"; 
 
-%macro skipit;
-data _infolib.&member._init;
- set _study_yrs_init;
-run;
-%mend skipit;
-
 data _infolib.&member._funs;
  set _FCMP_funs;
 run;
@@ -68,15 +62,6 @@ ods html path ="&_html_path"
          contents= "&member._info-contents.html"
          frame = "&member._info-frame.html"
          ;
-
-%macro skipit;         
-%let mydata = _study_yrs_init;
-ods proclabel "Study_yrs_init (%nobs)";
-Title "Study years considered by `&member` FCMP library member (%nobs)";
-proc print data = _study_yrs_init  contents = "- list";
-run;
-%mend skipit;
-
 
 /* FCMP functions  info*/
 proc sort data= _FCMP_funs out = FCMP_grps nodupkey;
